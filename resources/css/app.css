@@ -1,0 +1,236 @@
+@import 'tailwindcss';
+@import '../../vendor/livewire/flux/dist/flux.css';
+
+@source '../views';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
+@source '../../vendor/livewire/flux/stubs/**/*.blade.php';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-zinc-50: #fafafa;
+    --color-zinc-100: #f5f5f5;
+    --color-zinc-200: #e5e5e5;
+    --color-zinc-300: #d4d4d4;
+    --color-zinc-400: #a3a3a3;
+    --color-zinc-500: #737373;
+    --color-zinc-600: #525252;
+    --color-zinc-700: #404040;
+    --color-zinc-800: #262626;
+    --color-zinc-900: #171717;
+    --color-zinc-950: #0a0a0a;
+
+    --color-primary: var(--theme-primary);
+    --color-primary-hover: var(--theme-primary-hover);
+    --color-primary-light: var(--theme-primary-light);
+    --color-primary-text: var(--theme-primary-text);
+    
+    --color-sidebar: var(--theme-sidebar);
+    --color-sidebar-hover: var(--theme-sidebar-hover);
+    --color-sidebar-active: var(--theme-sidebar-active);
+    --color-sidebar-text: var(--theme-sidebar-text);
+    
+    --color-page: var(--theme-page);
+    --color-surface: var(--theme-surface);
+    --color-surface-hover: var(--theme-surface-hover);
+    --color-border-subtle: var(--theme-border);
+
+    --color-accent: var(--theme-primary);
+    --color-accent-content: var(--theme-primary);
+    --color-accent-foreground: var(--color-white);
+}
+
+:root {
+  /* Default corporate theme (Style 1 - Indigo & Slate Navy) */
+  --theme-primary: #4f46e5;
+  --theme-primary-hover: #4338ca;
+  --theme-primary-light: #e0e7ff;
+  --theme-primary-text: #3730a3;
+  
+  --theme-sidebar: #1e293b;
+  --theme-sidebar-hover: #334155;
+  --theme-sidebar-active: #4f46e5;
+  --theme-sidebar-text: #f8fafc;
+  
+  --theme-page: #f8fafc;
+  --theme-surface: #ffffff;
+  --theme-surface-hover: #f1f5f9;
+  --theme-border: #e2e8f0;
+}
+
+@layer theme {
+    .dark {
+        --color-accent: var(--color-white);
+        --color-accent-content: var(--color-white);
+        --color-accent-foreground: var(--color-neutral-800);
+    }
+}
+
+@layer base {
+
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+}
+
+[data-flux-field]:not(ui-radio, ui-checkbox) {
+    @apply grid gap-2;
+}
+
+[data-flux-label] {
+    @apply  !mb-0 !leading-tight;
+}
+
+input:focus[data-flux-control],
+textarea:focus[data-flux-control],
+select:focus[data-flux-control] {
+    @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
+}
+
+/* \[:where(&)\]:size-4 {
+    @apply size-4;
+} */
+
+/* Loading Overlay Styles */
+@layer components {
+    /* Global Loading Overlay */
+    #global-loading-overlay {
+        backdrop-filter: blur(4px);
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    #global-loading-overlay.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    #global-loading-overlay:not(.hidden) {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    /* Wire Loading States */
+    [wire\:loading] {
+        opacity: 0.6;
+        pointer-events: none;
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    [wire\:loading\.delay] {
+        transition-delay: 0.3s;
+    }
+
+    [wire\:loading\.longest] {
+        transition-delay: 0.5s;
+    }
+
+    [wire\:loading\.longer] {
+        transition-delay: 0.4s;
+    }
+
+    [wire\:loading\.long] {
+        transition-delay: 0.3s;
+    }
+
+    [wire\:loading\.short] {
+        transition-delay: 0.1s;
+    }
+
+    [wire\:loading\.shorter] {
+        transition-delay: 0.05s;
+    }
+
+    [wire\:loading\.shortest] {
+        transition-delay: 0.025s;
+    }
+
+    /* Loading Spinner */
+    .loading-spinner {
+        animation: spin 1s linear infinite;
+        border-radius: 9999px;
+        border: 2px solid #d1d5db;
+        border-top-color: #2563eb;
+    }
+
+    .loading-spinner-sm {
+        height: 1rem;
+        width: 1rem;
+    }
+
+    .loading-spinner-md {
+        height: 1.5rem;
+        width: 1.5rem;
+    }
+
+    .loading-spinner-lg {
+        height: 2rem;
+        width: 2rem;
+    }
+
+    .loading-spinner-xl {
+        height: 3rem;
+        width: 3rem;
+    }
+
+    /* Loading Text */
+    .loading-text {
+        font-size: 0.875rem;
+        color: #4b5563;
+        font-weight: 500;
+    }
+
+    /* Button Loading States */
+    .btn-loading {
+        position: relative;
+    }
+
+    .btn-loading[wire\:loading] {
+        color: transparent;
+    }
+
+    .btn-loading[wire\:loading]::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-loading[wire\:loading]::after {
+        animation: spin 1s linear infinite;
+        border-radius: 9999px;
+        border: 2px solid #d1d5db;
+        border-top-color: #2563eb;
+        height: 1rem;
+        width: 1rem;
+    }
+
+    /* Form Loading States */
+    .form-loading[wire\:loading] {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    /* Card Loading States */
+    .card-loading[wire\:loading] {
+        opacity: 0.75;
+    }
+
+    /* Table Loading States */
+    .table-loading[wire\:loading] {
+        opacity: 0.6;
+    }
+
+    /* Navigation Loading States */
+    .nav-loading[wire\:loading] {
+        opacity: 0.7;
+    }
+}
