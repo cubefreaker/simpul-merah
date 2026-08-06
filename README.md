@@ -1,146 +1,73 @@
-# Legal Drafting App
+# SIMPUL MERAH 
 
-A Laravel Livewire application for legal document drafting and management.
+**Sistem Informasi Pengusulan Produk Hukum Daerah**
 
-## Features
+Aplikasi berbasis web untuk digitalisasi proses pengusulan, pembahasan, dan pengundangan produk hukum daerah (Peraturan Bupati dan Surat Keputusan Bupati). Dibangun dengan menggunakan ekosistem Laravel, Livewire, Tailwind CSS, dan komponen antarmuka Flux UI.
 
-- **Global Loading Overlay**: Automatic loading indicator for all Livewire requests
-- **Wire:Loading Integration**: Comprehensive loading states throughout the application
-- **User Management**: Role-based access control (Superadmin, Admin, User)
-- **Form Submissions**: Document submission and management system
-- **Group Management**: Organizational structure management
-- **Modern UI**: Built with Tailwind CSS and Flux UI components
+## Fitur Utama
 
-## Loading Functionality
+- **Pengajuan Usulan Digital**: SKPD dapat mengusulkan produk hukum secara online dan memantau status secara *real-time*.
+- **Alur Disposisi Berjenjang**: Sistem disposisi yang mengalir secara hierarkis (SEKDA ➡ Asisten 1 ➡ Kabag Hukum ➡ Staf JF).
+- **Verifikasi & Persetujuan Sistem**: Verifikasi berjenjang dari tingkat Staf JF hingga persetujuan akhir oleh Bupati yang terintegrasi di dalam sistem.
+- **Auto-Generate NPKMD**: Sistem akan meng-generate dokumen Nota Pengajuan (NPKMD) secara otomatis berdasarkan metadata usulan saat verifikasi akhir di tingkat SEKDA.
+- **Manajemen Dokumen**: Validasi dan pengelolaan draf berbasis dokumen (mendukung format `.doc`/`.docx`).
+- **Global Loading Overlay**: Indikator *loading* interaktif terpusat menggunakan Livewire untuk memastikan kenyamanan pengguna (UX) selama request diproses.
+- **Role-based Access Control (RBAC)**: Pengaturan hak akses yang ketat untuk 6 peran pengguna spesifik (Pengusul, Kabag Hukum, Staf JF, Asisten I, SEKDA, Bupati).
 
-The application includes a comprehensive loading system:
+## Aktor dan Peran Pengguna
 
-### Global Loading Overlay
-- Uses Livewire's native `wire:loading.delay.longest` directive
-- Automatically appears during Livewire requests longer than 500ms
-- Centered spinner with "Loading..." text
-- Semi-transparent backdrop with blur effect
-- No JavaScript configuration required
+| Role | Keterangan | Fungsi Utama |
+| :--- | :--- | :--- |
+| **U1** | **User SKPD** (Pengusul) | Mengisi formulir usulan, mengunggah draf usulan, dan memantau progres produk hukum. |
+| **U2** | **Kabag Hukum** (Super Admin)| Menerima disposisi, mendelegasikan tugas ke staf, memverifikasi draf hasil kajian staf. |
+| **U3** | **Staf JF** (Admin) | Pengkajian (di luar sistem), unggah draf akhir yang sudah dibahas, *update* status pengundangan. |
+| **U4** | **Asisten I** | Meneruskan disposisi dari SEKDA ke Kabag Hukum, memverifikasi draf sebelum ke SEKDA. |
+| **U5** | **SEKDA** | Melakukan disposisi awal usulan, memverifikasi draf akhir, trigger fitur auto-generate NPKMD. |
+| **U6** | **Bupati** | Memberikan persetujuan akhir penetapan produk hukum. |
 
-### Wire:Loading Directives
-- `wire:loading`: Show content during loading
-- `wire:loading.remove`: Hide content during loading
-- `wire:loading.attr`: Add/remove attributes during loading
-- `wire:loading.class`: Add/remove classes during loading
-- Various delay modifiers (short, shorter, shortest, delay, long, longer, longest)
+## Alur Bisnis (Ringkasan)
 
-### Pre-built Components
-- **Loading Wrapper Component**: `@livewire('App\Livewire\LoadingWrapper')`
-- **Loading Button Pattern**: Direct `wire:click` with loading states
+1. **Pengusulan**: SKPD (U1) mengajukan draf awal usulan produk hukum (Perbup/SK).
+2. **Disposisi (Turun)**: Usulan didisposisikan secara berjenjang dari SEKDA (U5) ➡ Asisten I (U4) ➡ Kabag Hukum (U2) ➡ Staf JF (U3).
+3. **Kajian**: Staf JF (U3) melakukan kajian dan harmonisasi di luar sistem bersama SKPD pengusul, kemudian mengunggah Draf Final ke aplikasi.
+4. **Verifikasi (Naik)**: Draf diverifikasi berjenjang oleh Kabag Hukum (U2) ➡ Asisten I (U4) ➡ SEKDA (U5).
+5. **Persetujuan**: Setelah verifikasi SEKDA dan sistem men-generate dokumen NPKMD, Bupati (U6) memberikan persetujuan ("Setuju") melalui sistem.
+6. **Pengundangan**: Setelah ditandatangani dan ditetapkan, Staf JF (U3) mengupdate status akhir usulan menjadi "Telah Diundangkan".
 
-### CSS Classes
-- `.loading-spinner`: Animated spinner with size variants (sm, md, lg, xl)
-- `.loading-text`: Styled loading text
-- Component-specific loading classes (form-loading, card-loading, table-loading, nav-loading)
+*(Untuk detail lebih lanjut terkait alur bisnis, silakan lihat dokumen referensi: [BUSINESS FLOW](PRD/BUSINESS_FLOW.md))*
 
-## Installation
+## Instalasi dan Setup Development
 
-1. Clone the repository
-2. Install dependencies:
+1. *Clone* repositori ini.
+2. Install dependensi PHP dan Node.js:
    ```bash
    composer install
    npm install
    ```
-3. Copy environment file:
+3. Salin dan sesuaikan konfigurasi *environment*:
    ```bash
    cp .env.example .env
    ```
-4. Generate application key:
+4. Generate key aplikasi:
    ```bash
    php artisan key:generate
    ```
-5. Run migrations:
+5. Jalankan migrasi beserta *seeder* untuk mengisi role, izin, dan *dummy user*:
    ```bash
-   php artisan migrate
+   php artisan migrate --seed
    ```
-6. Build assets:
+6. Build aset frontend (Tailwind & Vite):
    ```bash
    npm run build
    ```
-7. Start the development server:
+7. Jalankan server lokal:
    ```bash
    php artisan serve
    ```
 
-## Usage
+## Catatan Tambahan (Pengembang)
 
-### Testing Loading Functionality
+Aplikasi ini telah mengimplementasikan sistem *loading indicator* khusus menggunakan `wire:loading.delay.longest` bawaan Livewire. Komponen tersebut dapat ditemukan pada `@livewire('App\Livewire\LoadingWrapper')` dan disarankan untuk selalu diaplikasikan pada setiap interaksi asinkron (*wire:click*, *wire:submit*, form, tabel).
 
-Visit `/loading-demo` to see all loading features in action:
-
-- Basic loading examples with different durations
-- Loading overlay component demonstrations
-- Loading button component examples
-- Form and table loading states
-- Various loading spinner sizes
-
-### Using Wire:Loading
-
-```html
-<!-- Basic loading state -->
-<div wire:loading>
-    Loading...
-</div>
-
-<!-- Button with loading state -->
-<button wire:click="save" 
-        wire:loading.attr="disabled"
-        wire:loading.class="opacity-75">
-    <span wire:loading.remove>Save</span>
-    <span wire:loading>Saving...</span>
-</button>
-
-<!-- Form with loading overlay -->
-@livewire('loading-wrapper', ['text' => 'Saving form...'])
-<form wire:submit="save">
-    <!-- Form fields -->
-</form>
-```
-
-### Using Loading Components
-
-```html
-<!-- Loading button -->
-<button wire:click="save" 
-        class="bg-blue-600 text-white hover:bg-blue-700 font-bold py-2 px-4 rounded"
-        wire:loading.attr="disabled"
-        wire:loading.class="opacity-75">
-    <span wire:loading.remove>Save Changes</span>
-    <span wire:loading.delay>
-        <div class="flex items-center space-x-2">
-            <div class="loading-spinner loading-spinner-sm"></div>
-            <span>Saving...</span>
-        </div>
-    </span>
-</button>
-
-<!-- Loading overlay -->
-@livewire('loading-wrapper', [
-    'size' => 'md',
-    'text' => 'Loading data...'
-])
-<div class="p-4">
-    <!-- Your content -->
-</div>
-```
-
-## Documentation
-
-For detailed documentation on the loading functionality, see [LOADING_GUIDE.md](LOADING_GUIDE.md).
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## License
-
-This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT). 
+---
+**Lisensi**: [MIT License](https://opensource.org/licenses/MIT)
