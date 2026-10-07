@@ -49,7 +49,7 @@
     <main class="flex-grow flex items-center relative overflow-hidden">
         <!-- Background Image with Overlay -->
         <div class="absolute inset-0 z-0">
-            <img src="{{ asset('images/gedung_setda.png') }}" alt="Gedung Sekretariat Daerah" class="w-full h-full object-cover object-center scale-105 animate-[pulse_30s_ease-in-out_infinite_alternate]" />
+            <img src="{{ asset('images/gedung_setda.webp') }}" alt="Gedung Sekretariat Daerah" class="w-full h-full object-cover object-center scale-105 animate-[pulse_30s_ease-in-out_infinite_alternate]" />
             <div class="absolute inset-0 bg-gradient-to-r from-gray-900/90 via-gray-900/70 to-transparent"></div>
             <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent"></div>
         </div>
